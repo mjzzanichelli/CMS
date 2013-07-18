@@ -1,0 +1,9 @@
+{
+	"pageId": "test"
+	, "phisical": ""
+	, "fragments": { 
+		"text": "text.json"
+		, "list": "list.json"
+	}
+	
+}

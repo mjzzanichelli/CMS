@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang='en'>
+
+<head>
+	<title>Lists</title>
+	<script src="/socket.io/socket.io.js" type="text/javascript"></script>
+	<script src="/mjz/js/mjz.js" type="text/javascript"></script>
+	<script src="/javascripts/api.js" type="text/javascript"></script>
+	<script src="/javascripts/index.js" type="text/javascript"></script>
+</head>
+
+<body>
+	<form id="ListForm" name="list" method="post" onsubmit="javascript:return false;" style="float:left;border:1px solid red;">
+		<input type="text" name="name" id="name">
+		<ul id="ListFormItems">
+			<li><input type="text" name="item" id="item0"></li>
+			<li><input type="text" name="item" id="item1"></li>
+			<li><input type="text" name="item" id="item2"></li>
+			<li><input type="text" name="item" id="item3"></li>
+			<li><input type="text" name="item" id="item4"></li>
+			<li><input type="text" name="item" id="item5"></li>
+			<li><input type="text" name="item" id="item6"></li>
+			<li><input type="text" name="item" id="item7"></li>
+			<li><input type="text" name="item" id="item8"></li>
+			<li><input type="text" name="item" id="item9"></li>
+		</ul>
+		
+		<ul id="ListFormActions">
+			<li><input name="create" id="create" type="button" value="Create"/></li>
+			<li><input name="reset" id="reset" type="button" value="Reset"/></li>
+		</ul>
+	</form>
+	<ul id="ListCollection" style="float:left;border:1px solid red;"></ul>
+
+</body>
+</html>

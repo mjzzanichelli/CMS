@@ -1,0 +1,40 @@
+{
+	"onDispose":function(panel){
+		var _remove = $$(UNI.selectElements("input[type=button][value=remove]",panel))
+			, _add = $$(UNI.selectElements("input[type=button][value=add]",panel))
+			, _remove_function = function(e,obj){$$(obj.parent({element:this})).remove()}
+			, _add_function = function(e,obj){
+				var _new_element = $$(obj.parent({element:this})).insertAfter('<div><input type="text" value="" data-id="list"><input type="button" value="remove"><input type="button" value="add"></div>')
+				$$(UNI.selectElements("input[type=button][value=remove]",_new_element)).on("click",_remove_function);
+				$$(UNI.selectElements("input[type=button][value=add]",_new_element)).on("click",_add_function);
+			}
+		;
+		_remove.on("click",_remove_function)
+		_add.on("click",_add_function)
+	}
+	, "values": function(){
+		var _values = {
+			"list": function(panel){
+				var _items = UNI.selectElements("input[data-id=list]",panel),i=0,l=_items.length,_value='';
+				for (;i<l;i++){
+					if (_items[i].value.length)_value += '<li>'+ _items[i].value +'</li>';
+				}
+				return _value;
+			}
+		};
+		return _values;
+	}
+	, "dispose": function(fragment){
+		var _panel='<div><input type="button" value="add"></div>',_items = UNI.selectElements("li",fragment),i=0,l=_items.length,_val;
+		for (;i<l;i++){
+			_val = _items[i].innerHTML.replace(/"/g,'&quot;');
+			_panel += '<div><input type="text" value="'+ _val +'" data-id="list"><input type="button" value="remove"><input type="button" value="add"></div>'
+		}
+		
+		return _panel;
+	}
+	, "render": function(){
+		var _content = '{list}';
+		return _content;
+	}
+}

@@ -1,0 +1,7 @@
+{
+	"ext": "cms"
+	, "controller": "id"
+	, "pages": {
+		"/CMS/src/test.html":"test.json"
+	}
+}

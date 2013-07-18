@@ -1,0 +1,20 @@
+{
+	"values": function(){
+		var _values = {
+			"text": function(panel){
+				return UNI.selectElements("input[data-id=text]",panel)[0].value;
+			}
+		};
+		return _values;
+	}
+	, "dispose": function(fragment){
+		var _text = fragment.innerHTML.replace(/"/g,'&quot;');
+		
+		var _panel = '<div><input type="text" value="'+ _text +'" data-id="text"></div>';
+		return _panel;
+	}
+	, "render": function(){
+		var _content = '{text}';
+		return _content;
+	}
+}

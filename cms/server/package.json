@@ -1,0 +1,11 @@
+{
+  "name": "UNICMS", 
+  "version": "0.0.1",
+  "description": "lightweight CMS",
+  "dependencies": { 
+    "mime": "~1.2.7"
+    , "cheerio": "~0.12.0"
+    , "request": "~2.16.6"
+    , "querystring": "~0.2.0"
+  }
+}
