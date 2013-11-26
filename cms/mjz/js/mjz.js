@@ -7,9 +7,9 @@ var $$ = (
         var ready = function(callback){
             var _eventName = document.addEventListener ? "DOMContentLoaded" : "readystatechange"
             , _helper = function(){
-                removeEvent(document,_eventName,_helper)
+                removeEvent(document,_eventName,_helper);
                 if (callback) callback();
-            }
+            };
             addEvent(document,_eventName,_helper);
         };
         
@@ -40,7 +40,7 @@ var $$ = (
             var _extend = {},key;
             for (key in base) _extend[key] = base[key];
             for (key in add) if (overwrite || !base[key])_extend[key] = add[key];
-            return _extend
+            return _extend;
         };
 	
         var stringify = function(obj){
@@ -111,7 +111,7 @@ var $$ = (
         			}
         		}
         	}
-            return _isInArray
+            return _isInArray;
         };
 		
         var toArray = function(nodelist){
@@ -272,7 +272,7 @@ var $$ = (
             var attr_fn,_style={},params = (isArray(params) ? params : [params]),i=params.length;
             while(i--){
                 attr_fn = setFunctionFormat(params[i]);
-                _style[params[i]] = element.style[attr_fn]
+                _style[params[i]] = element.style[attr_fn];
             }
             attr_fn = params = i = null;
             return _style;
@@ -319,19 +319,185 @@ var $$ = (
             return _elements;
         };
         
+        var getElementsByPseudo = function(elms,pseudo){
+			//console.log(pseudo)
+			var i=elms.lengths;
+			if (isNaN(pseudo)){
+				switch(pseudo){
+					case "first":
+						break;
+					case "last":
+						break;
+				}
+			}
+			return elms;
+		};
+		
+		var getElementsByClassName = function(elms, className){
+			var i = elms.length;
+			while (i--) if (!hasClass(elms[i],className)) elms.splice(i, 1);
+			return elms;
+		};
+		
+		
+		var getElementsByAttributeValue = function(elms, attr,value){
+			var i = elms.length;
+			while (i--)
+			if (getAttributes(elms[i],attr)[attr]!==value) elms.splice(i, 1);
+			return elms;
+		};
+		
+		
+		var setSeparatorAction = function(string,sep) {
+			var _idxs = setSelectionIndexes(string)
+				, _sep = {
+					"sep":string
+					, "idx": 0
+				}
+				, _action
+				, _value = string
+			;
+			if (_idxs["separator"]){
+				_sep = _idxs["separator"];
+				if (_sep["idx"]>0)_value = _value.substring(0,_sep["idx"]);
+			}
+			switch(sep["sep"]){
+				case "#":
+					_action = function(elms){
+						var _elements = getElementsByAttributeValue(elms,"id",_value);
+						return _elements;
+					};
+					break;
+				case ".":
+					_action = function(elms){
+						var _elements = getElementsByClassName(elms,_value);
+						return _elements;
+					};
+					break;
+				case "]":
+					_action = function(elms){
+						return elms;
+					};
+					break;
+				case "[":
+					_action = function(elms){
+						var 
+							_value_arr = _value.split("=")
+							, _elements = getElementsByAttributeValue(elms,_value_arr[0],_value_arr[1].toString())
+						;
+						return _elements;
+					};
+					break;
+				case ":":
+					_action = function(elms){
+						var _elements = getElementsByPseudo(elms,string);
+						return _elements;
+					};
+					break;
+				/*case ">":
+					_action = function(elms){
+						return elms;
+					}
+					break;*/
+			}
+			return {"action": _action, "string":string.substring(_sep["idx"]+_sep["sep"].length), "sep": _sep};
+		};
+		
+		var setSelectionIndexes = function(string) {
+			var _idxs = {
+					".": null
+					,"#": null
+					,"[": null
+					,"]": null
+					,":": null
+					//,">": null
+				}
+				, _sep
+				, _idx
+			;
+			for (_sep in _idxs) {
+				_idxs[_sep] = string.indexOf(_sep);
+				if (_idxs[_sep] >= 0 && (_idx=== undefined || _idxs[_sep]<_idx["idx"]))_idx = {"sep": _sep,"idx":_idxs[_sep]};
+			}
+				
+			return {
+				"indexes": _idxs
+				, "separator": _idx  
+			};
+		};
+	
+        var selectElements = function(selector,container) {
+			var 
+				_selector_arr = trim(selector).split(" ")
+				, _container = container || document
+				, i = 0
+				, ii
+				, l = _selector_arr.length
+				, ll
+				, _sel
+				, _idxs
+				, _sep
+				, _dom_type
+				, _actions
+				, _elements = []
+				, _separator
+			;
+			_container = (isArray(_container) ? _container : [_container]);
+			for (;i<l;i++){
+				if (!_container.length) break;
+				_sel = _selector_arr[i].replace(/ /g,"");
+				if (_sel.length>0){
+					_idxs = setSelectionIndexes(_sel);
+					_elements = [];
+					_actions = [];
+					_dom_type = "*";
+					if (_idxs["separator"]){
+						_sep = _idxs["separator"];
+						if (_sep["idx"]>0)_dom_type = _sel.substring(0,_sep["idx"]);
+						_sel = _sel.substring(_sep["idx"]+_sep["sep"].length);
+						_separator = setSeparatorAction(_sel,_sep);
+						_sel = _separator["string"];
+						_sep = _separator["sep"];
+						_actions.push(_separator["action"]);
+						while(_sel.length){
+							_separator = setSeparatorAction(_sel,_sep);
+							if (_sel==_separator["string"])break;
+							_sel = _separator["string"];
+							_sep = _separator["sep"];
+							_actions.push(_separator["action"]);
+						}
+					} else _dom_type = _sel;
+					ii = 0;
+					ll = _container.length;
+					for (;ii<ll;ii++) {
+						_elements = _elements.concat(toArray(_container[ii].getElementsByTagName(_dom_type)));
+					}
+					ii = 0;
+					ll = _actions.length;
+					for (;ii<ll;ii++) {
+						if (_elements.length) {
+							_elements = _actions[ii](_elements);
+						}
+					}
+				}
+				_container = _elements;
+			}
+			return _elements;
+		};
+	
         var loopEach = function(elements,action){
             var _elements = elements, i = _elements.length;
             while(i--) action.call(_elements[i],i);
         };
         
         var getMonthName = function(index){
-            var _months = ["january","february","march","april","may","june","july","august","september","october","november","december"]
+            var _months = ["january","february","march","april","may","june","july","august","september","october","november","december"];
             return _months[index];
         };
         
         var setDocumentSelection = function(status){
-            if (document.onselectstart!=="undefined") document.onselectstart=function(){return status;}
-            else document.onmousedown=function(){return status;}
+            if (document.onselectstart!=="undefined") document.onselectstart=function(){return status;};
+            else document.onmousedown=function(){return status;};
         };
         
         var getSelection = function(selector){
@@ -348,7 +514,7 @@ var $$ = (
                         , objects: new Array
                         , indexes: {}
                         , listeners: {}
-                    }
+                    };
                 }
                 self.elements[i].$$plug.objects.push(self);
                 self.elements[i].$$plug.indexes[self.unique] = i;
@@ -370,7 +536,7 @@ var $$ = (
                         if (callback) callback();
                         e.stopPropagation ? e.stopPropagation() : e.cancelBubble = true;
                     }
-                }
+                };
                 while(i--) addEvent(self.elements[i],"DOMNodeRemoved",_helper);
                 i = null;
             }
@@ -404,7 +570,7 @@ var $$ = (
                 , inst
                 , _$$element
                 ;
-                _clean = _cleandeep ? true : _clean
+                _clean = _cleandeep ? true : _clean;
                 if (element.hasChildNodes() && _clean){
                     if (_cleandeep){
                         _nodelist = getSubNodes(element,true);
@@ -578,13 +744,13 @@ var $$ = (
                                     if (params && params.stop) {
                                         e.stopPropagation ? e.stopPropagation() : e.cancelBubble = true;
                                     }
-                                }
+                                };
                             })(_element);
                             //console.log(_helper)
                             if (!_element.$$plug.listeners[self.unique]) _element.$$plug.listeners[self.unique] = {};
                             if (!_element.$$plug.listeners[self.unique][eventName]) _element.$$plug.listeners[self.unique][eventName] = new Array;
-                            _element.$$plug.listeners[self.unique][eventName].push([helper,_helper])
-                            addEvent(_element,eventName,_helper)
+                            _element.$$plug.listeners[self.unique][eventName].push([helper,_helper]);
+                            addEvent(_element,eventName,_helper);
                         }
                     }
                 }
@@ -623,7 +789,7 @@ var $$ = (
                                     if (_index>=0){
                                         var _helper = _element_listener[_index][1];
                                         removeEvent(_element,eventName,_helper);
-                                        _element_listener.splice(_index,1)
+                                        _element_listener.splice(_index,1);
                                     }
                                 }
                             }
@@ -645,12 +811,12 @@ var $$ = (
                     ,i=_elements.length;
                     if (value!==undefined){
                         while (i--){
-                            cleanChildNodes(_elements[i],params)
+                            cleanChildNodes(_elements[i],params);
                             _elements[i].innerHTML = value;
                         }
                     }
                     _elements = i = null;
-                    return self.elements[0].innerHTML
+                    return self.elements[0].innerHTML;
                 }
                 
                 , append: function(value,params){
@@ -723,7 +889,7 @@ var $$ = (
                     ,i=_elements.length;
                     self.removed=true;
                     while (i--){
-                        cleanChildNodes(_elements[i],params)
+                        cleanChildNodes(_elements[i],params);
                         setNodeCleanUp(_elements[i]);
                         _elements[i].parentNode.removeChild(_elements[i]);
                         self.elements.splice(_elements[i].$$plug.indexes[self.unique],1);
@@ -782,7 +948,7 @@ var $$ = (
                         if (getType(params)=="function") _elements = filterElements(_elements,params);
                         else if (params.condition) _elements = filterElements(_elements,params.condition);
                     }
-                    return _elements
+                    return _elements;
                 }
             
                 , each: function(params){
@@ -861,10 +1027,10 @@ var $$ = (
                 }
                 
                 , position: function(params){
-                    var _element = (params && params.element ? params.element : self.elements[0])
+                    var _element = (params && params.element ? params.element : self.elements[0]);
                     return getPosition(_element);
                 }
-            }
+            };
             return _methods;
         };
 		
@@ -907,6 +1073,7 @@ var $$ = (
                 , trim: trim
                 , getSubNodes: getSubNodes
                 , filterElements: filterElements
+                , selectElements: selectElements
                 , getMonthName: getMonthName
                 , setDocumentSelection: setDocumentSelection
             };

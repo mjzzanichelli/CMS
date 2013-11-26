@@ -4,4 +4,8 @@
 	, "pages": {
 		"/CMS/src/test.html":"test.json"
 	}
+	, "API" : {
+		"editor": "http://127.0.0.1:4000/API/Editor/"
+		, "upload": "http://127.0.0.1:4000/API/Upload/"
+	}
 }

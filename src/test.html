@@ -3,11 +3,68 @@
 	<head>
 		<title>CMS</title>
 		<script type="text/javascript" src="../cms/uni.js"></script>
+		<script>
+			UNI.setPageConfig({
+					"pageId": "test"
+					, "fragments": {
+						"img": "img.json"
+						//, "list": "list.json"
+						, "text": "text.json"
+					}
+				});
+			window.setTimeout(function(){
+				UNI.setPageConfig({
+					"pageId": "test"
+					, "fragments": {
+						"img": "img.json"
+						, "list": "list.json"
+						, "text": "text.json"
+					}
+				});
+			},2000);
+		</script>
+		<!--<script type="text/javascript" src="../cms/mjz2/js/mjz2.js"></script>
+		<script>
+			$$.ready(function(){
+				$$.addJS({path:"../cms/uni.js","id":"cms"},function(){
+					UNI.setPageConfig({
+						"pageId": "test"
+						, "fragments": {
+							"img": "img.json"
+							//, "list": "list.json"
+							, "text": "text.json"
+						}
+					});
+					window.setTimeout(function(){
+						UNI.setPageConfig({
+							"pageId": "test"
+							, "fragments": {
+								"img": "img.json"
+								, "list": "list.json"
+								, "text": "text.json"
+							}
+						});
+					},2000);
+				});
+			});
+		</script>-->
+		<link rel="stylesheet" href="css/global.css">
 	</head>
 	<body>
-
-		<div cms-id="text" class="class" id="id">test</div>
-		<ul cms-id="list"><li>item1</li><li>item2</li><li>item3</li></ul>
-		
+		<div class="wrapper">
+			<div class="col left">
+				<div cms-id="text" class="box">test fghjfhj fghj fhj</div>
+			</div>
+			<div class="col right">
+				<div class="box" cms-id="img"><img src="/CMS/cms/pages/storage/test/1_1_1_1_ajax_loader.gif"></div>		
+			</div>
+			<div class="col big">
+				<ul cms-id="list" class="box"><li>item1</li><li>item2</li><li>item3</li><li>item4</li></ul>
+			</div>
+			<form name="form-test" action="http://127.0.0.1:4000/API/Upload/" method="POST" enctype="multipart/form-data">
+				<input type="file" name="imgFile" data-id="img">
+				<input type="submit">
+			</form>
+		</div>
 	</body>
 </html>

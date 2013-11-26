@@ -2,7 +2,13 @@
 	"values": function(){
 		var _values = {
 			"text": function(panel){
-				return UNI.selectElements("input[data-id=text]",panel)[0].value;
+				var _input = $$.selectElements("input[data-id=text]",panel)[0]
+					, _text = {
+						"value":_input.value
+					}
+				;
+				return _text;
+				//return $$.selectElements("input[data-id=text]",panel)[0].value;
 			}
 		};
 		return _values;

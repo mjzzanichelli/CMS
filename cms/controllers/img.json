@@ -1,0 +1,51 @@
+{
+	"values": function(){
+		var _values = {
+			"img": function(panel){
+				var _input = $$.selectElements("input[data-id=img]",panel)[0]
+					, _img = {
+						"value":_input.value 
+						, "file":_input.files[0]
+					}
+				;
+				return _img;
+			}
+			, "img_path": function(panel){
+				var _input = $$.selectElements("input[data-id=img_path]",panel)[0]
+					, _img_path = {
+						"value":_input.value
+						, "element": _input 
+					}
+				;
+				return _img_path;
+			}
+		};
+		return _values;
+	}
+	, "dispose": function(fragment){
+		var _img = $$.getAttributes(fragment,"src")["src"];
+		var _panel = '<div><input type="file" value="'+ _img +'" data-id="img"><input type="hidden" data-id="img_path"/></div>';
+		return _panel;
+	}
+	
+	, "onRender": function(config,renderFragments){
+		var _panel = config["fragments"]["panel"]["obj"].elements[0]
+			, _values = config["fragments"]["panel"]["ctrl"]["values"]()
+			, _img = _values["img"](_panel)
+			, _img_path = _values["img_path"](_panel)
+		;
+		$$.FS.upload({
+				"folder":config.page.pageId
+				, "name": "imgName"
+				, "url": config.site.API.upload
+				, "file": _img.file
+			},function(data){_img_path.element.value = data.filename;renderFragments();}
+		);
+		return ;
+	}
+	
+	, "render": function(){
+		var _content = '<img src="{img_path}"/>';
+		return _content;
+	}
+}

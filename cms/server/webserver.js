@@ -13,13 +13,13 @@ server = http.createServer(function(request, response) {
 	if (request.url == '/') {
 		filePath = 'public/index.html'; 
 	} else {
-		filePath = 'public' + request.url; 
+		filePath = '../../..' + request.url; 
 	}
 
 	var absPath = './' + filePath;
 	serveStatic(response, cache, absPath);
 	
-	/*fs.exists("../../CMS/src/test.html", function(exists) {
+	/*fs.exists("../../../CMS/src/test.html", function(exists) {
 		console.log(exists)
 	})*/
 });
@@ -62,7 +62,6 @@ function serveStatic(response, cache, absPath) {
 function readFile(absPath,callback) {
   	if (callback){
 	  	absPath = "../../.."+absPath;
-	  	
 	  	fs.exists(absPath, function(exists) {
 			if (exists) {
 				fs.readFile(absPath, 'utf8', function(err, data) { 
@@ -99,10 +98,34 @@ function writeFile(absPath,content,callback) {
 	}
 }
 
+function createStorageFile(absPath,content,callback,count) {
+  	if (callback){
+  		var count = count||0
+  			, _absPathArr = absPath.split("/")
+  			, _absPath = "../../.."
+  		;
+  		_absPathArr[_absPathArr.length-1] = (count==0?"":count+"_")+_absPathArr[_absPathArr.length-1];
+  		_absPathArr = _absPathArr.join("/");
+  		_absPath += _absPathArr;
+	  		
+	  	fs.exists(_absPath, function(exists) {
+			if (exists) createStorageFile(absPath,content,callback,count+1);
+			else {
+				fs.writeFile(_absPath, content, 'binary', function(err) { 
+					if (err) {
+						callback({"error":"file not whiteble"});
+					} else callback({"filename":_absPathArr});
+				});
+			}
+		});
+	}
+}
+
 module.exports = {
 	server: server
 	, methods: {
 		readFile: readFile
 		, writeFile: writeFile
+		, createStorageFile: createStorageFile
 	}
 };

@@ -25,20 +25,20 @@ var $$resizable = function(){
         
         _self.on(_name+"dragnorthstart",function(e,obj){
             _resizer = {"start_size":[this.clientWidth,this.clientHeight],"start_offset":$$.core.getOffset(this)};
-            if (_params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
+            if (_params && _params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
             _self.trigger(_name+"start",{elements:[this],point:"n",start:_resizer});
         });
         
         _self.on(_name+"dragnorthmove",function(e,obj){
             _height = _resizer["start_size"][1]+(e.$$plug["params"]["move"]["start_position"]["mouse"][1]-e.$$plug["params"]["move"]["current_position"]["mouse"][1]);
             if (_height<0)_height=0;
-            _top = _height==0 ? e.$$plug["params"]["move"]["start_position"]["element"][1]+_resizer["start_size"][1] : e.$$plug["params"]["move"]["current_position"]["element"][1]
+            _top = _height==0 ? e.$$plug["params"]["move"]["start_position"]["element"][1]+_resizer["start_size"][1] : e.$$plug["params"]["move"]["current_position"]["element"][1];
             
             if (_resizer["container"]){
                 _resizer["dragger"]={
                     "element": this
                     , "style": $$.core.getStyle(this,"top")
-                }
+                };
             }
             
             $$.core.setStyle(this,{
@@ -47,12 +47,12 @@ var $$resizable = function(){
             
             if (_resizer["dragger"]){
                 //Limiting NORTH to container
-                _resizer["dragger"]["offset"] = $$.core.getOffset(_resizer["dragger"]["element"])
+                _resizer["dragger"]["offset"] = $$.core.getOffset(_resizer["dragger"]["element"]);
                 if (_resizer["dragger"]["offset"][1]<=_resizer["container"]["offset"][1]){
                     _resizer["dragger"]["style"] = {
                         "top": (parseInt(_resizer["dragger"]["style"]["top"],10)+(_resizer["container"]["offset"][1]-_resizer["dragger"]["offset"][1])).toString()+"px"
                         , "height": (_resizer["start_size"][1]+(_resizer["start_offset"][1]-_resizer["container"]["offset"][1])).toString()+"px"
-                    }
+                    };
                     $$.core.setStyle(_resizer["dragger"]["element"],_resizer["dragger"]["style"]);
                 } else $$.core.setStyle(_resizer["dragger"]["element"],{"height":_height.toString()+"px"});
             } else $$.core.setStyle(this,{"height":_height.toString()+"px"});
@@ -77,7 +77,7 @@ var $$resizable = function(){
         
         _self.on(_name+"dragsouthstart",function(e,obj){
             _resizer = {"start_size":[this.clientWidth,this.clientHeight],"start_offset":$$.core.getOffset(this)};
-            if (_params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
+            if (_params && _params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
             _self.trigger(_name+"start",{elements:[this],point:"s",start:_resizer});
         });
         
@@ -90,7 +90,7 @@ var $$resizable = function(){
                 _resizer["dragger"]={
                     "element": this
                     , "style": $$.core.getStyle(this,"height")
-                }
+                };
             }
             
             $$.core.setStyle(this,{
@@ -103,7 +103,7 @@ var $$resizable = function(){
                 if ((_resizer["start_offset"][1]+_height)>=(_resizer["container"]["offset"][1]+_resizer["container"]["size"][1])){
                     _resizer["dragger"]["style"] = {
                         "height": ((_resizer["container"]["offset"][1]+_resizer["container"]["size"][1])-_resizer["start_offset"][1]).toString()+"px"
-                    }
+                    };
                     $$.core.setStyle(_resizer["dragger"]["element"],_resizer["dragger"]["style"]);
                 }
             }
@@ -128,7 +128,7 @@ var $$resizable = function(){
         
         _self.on(_name+"drageaststart",function(e,obj){
             _resizer = {"start_size":[this.clientWidth,this.clientHeight],"start_offset":$$.core.getOffset(this)};
-            if (_params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
+            if (_params && _params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
             _self.trigger(_name+"start",{elements:[this],point:"e",start:_resizer});
         });
         
@@ -141,7 +141,7 @@ var $$resizable = function(){
                 _resizer["dragger"]={
                     "element": this
                     , "style": $$.core.getStyle(this,"width")
-                }
+                };
             }
             
             $$.core.setStyle(this,{
@@ -154,7 +154,7 @@ var $$resizable = function(){
                 if ((_resizer["start_offset"][0]+_width)>=(_resizer["container"]["offset"][0]+_resizer["container"]["size"][0])){
                     _resizer["dragger"]["style"] = {
                         "width": ((_resizer["container"]["offset"][0]+_resizer["container"]["size"][0])-_resizer["start_offset"][0]).toString()+"px"
-                    }
+                    };
                     $$.core.setStyle(_resizer["dragger"]["element"],_resizer["dragger"]["style"]);
                 }
             }
@@ -179,31 +179,31 @@ var $$resizable = function(){
         
         _self.on(_name+"dragweststart",function(e,obj){
             _resizer = {"start_size":[this.clientWidth,this.clientHeight],"start_offset":$$.core.getOffset(this)};
-            if (_params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
+            if (_params && _params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
             _self.trigger(_name+"start",{elements:[this],point:"w",start:_resizer});
         });
         
         _self.on(_name+"dragwestmove",function(e,obj){
             _width = _resizer["start_size"][0]+(e.$$plug["params"]["move"]["start_position"]["mouse"][0]-e.$$plug["params"]["move"]["current_position"]["mouse"][0]);
             if (_width<0)_width=0;
-            _left = _width==0 ? e.$$plug["params"]["move"]["start_position"]["element"][0]+_resizer["start_size"][0] : e.$$plug["params"]["move"]["current_position"]["element"][0]
+            _left = _width==0 ? e.$$plug["params"]["move"]["start_position"]["element"][0]+_resizer["start_size"][0] : e.$$plug["params"]["move"]["current_position"]["element"][0];
             if (_resizer["container"]){
                 _resizer["dragger"]={
                     "element": this
                     , "style": $$.core.getStyle(this,"left")
-                }
+                };
             }
             $$.core.setStyle(this,{
                 "left": _left.toString()+"px"
             });
             if (_resizer["dragger"]){
                 //Limiting WEST to container
-                _resizer["dragger"]["offset"] = $$.core.getOffset(_resizer["dragger"]["element"])
+                _resizer["dragger"]["offset"] = $$.core.getOffset(_resizer["dragger"]["element"]);
                 if (_resizer["dragger"]["offset"][0]<=_resizer["container"]["offset"][0]){
                     _resizer["dragger"]["style"] = {
                         "left": (parseInt(_resizer["dragger"]["style"]["left"],10)+(_resizer["container"]["offset"][0]-_resizer["dragger"]["offset"][0])).toString()+"px"
                         , "width": (_resizer["start_size"][0]+(_resizer["start_offset"][0]-_resizer["container"]["offset"][0])).toString()+"px"
-                    }
+                    };
                     $$.core.setStyle(_resizer["dragger"]["element"],_resizer["dragger"]["style"]);
                 } else $$.core.setStyle(_resizer["dragger"]["element"],{"width":_width.toString()+"px"});
             } else $$.core.setStyle(this,{"width":_width.toString()+"px"});
@@ -230,7 +230,7 @@ var $$resizable = function(){
         
         _self.on(_name+"dragnortheaststart",function(e,obj){
             _resizer = {"start_size":[this.clientWidth,this.clientHeight],"start_offset":$$.core.getOffset(this)};
-            if (_params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
+            if (_params && _params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
             _self.trigger(_name+"start",{elements:[this],point:"ne",start:_resizer});
         });
         
@@ -246,7 +246,7 @@ var $$resizable = function(){
                 _resizer["dragger"]={
                     "element": this
                     , "style": $$.core.getStyle(this,["top","width"])
-                }
+                };
             }
             
             $$.core.setStyle(this,{
@@ -257,19 +257,19 @@ var $$resizable = function(){
             
             if (_resizer["dragger"]){
                 //Limiting NORTH to container
-                _resizer["dragger"]["offset"] = $$.core.getOffset(_resizer["dragger"]["element"])
+                _resizer["dragger"]["offset"] = $$.core.getOffset(_resizer["dragger"]["element"]);
                 if (_resizer["dragger"]["offset"][1]<=_resizer["container"]["offset"][1]){
                     _resizer["dragger"]["style"] = {
                         "top": (parseInt(_resizer["dragger"]["style"]["top"],10)+(_resizer["container"]["offset"][1]-_resizer["dragger"]["offset"][1])).toString()+"px"
                         , "height": (_resizer["start_size"][1]+(_resizer["start_offset"][1]-_resizer["container"]["offset"][1])).toString()+"px"
-                    }
+                    };
                     $$.core.setStyle(_resizer["dragger"]["element"],_resizer["dragger"]["style"]);
                 } else $$.core.setStyle(_resizer["dragger"]["element"],{"height":_height.toString()+"px"});
                 //Limiting EAST to container
                 if ((_resizer["start_offset"][0]+_width)>=(_resizer["container"]["offset"][0]+_resizer["container"]["size"][0])){
                     _resizer["dragger"]["style"] = {
                         "width": ((_resizer["container"]["offset"][0]+_resizer["container"]["size"][0])-_resizer["start_offset"][0]).toString()+"px"
-                    }
+                    };
                     $$.core.setStyle(_resizer["dragger"]["element"],_resizer["dragger"]["style"]);
                 }
             } else $$.core.setStyle(this,{"height":_height.toString()+"px"});
@@ -296,7 +296,7 @@ var $$resizable = function(){
         
         _self.on(_name+"dragnorthweststart",function(e,obj){
             _resizer = {"start_size":[this.clientWidth,this.clientHeight],"start_offset":$$.core.getOffset(this)};
-            if (_params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
+            if (_params && _params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
             _self.trigger(_name+"start",{elements:[this],point:"nw",start:_resizer});
         });
         
@@ -312,7 +312,7 @@ var $$resizable = function(){
                 _resizer["dragger"]={
                     "element": this
                     , "style": $$.core.getStyle(this,["top","left"])
-                }
+                };
             }
             
             $$.core.setStyle(this,{
@@ -322,7 +322,7 @@ var $$resizable = function(){
             
             if (_resizer["dragger"]){
                 //Limiting NORTH to container
-                _resizer["dragger"]["offset"] = $$.core.getOffset(_resizer["dragger"]["element"])
+                _resizer["dragger"]["offset"] = $$.core.getOffset(_resizer["dragger"]["element"]);
                 if (_resizer["dragger"]["offset"][1]<=_resizer["container"]["offset"][1]){
                     _resizer["dragger"]["style"]["top"] = (parseInt(_resizer["dragger"]["style"]["top"],10)+(_resizer["container"]["offset"][1]-_resizer["dragger"]["offset"][1])).toString()+"px";
                     _resizer["dragger"]["style"]["height"] = (_resizer["start_size"][1]+(_resizer["start_offset"][1]-_resizer["container"]["offset"][1])).toString()+"px";
@@ -345,7 +345,6 @@ var $$resizable = function(){
         , _left
         , _top
         ;
-        
         _handlers["se"] = _self.append('<div class="mjz-handler resizable-se"/>');
         _self.install(_name+"dragsoutheast",$$draggable,{"handler":function(){
                 var _subs = $$.core.getSubNodes(this)
@@ -358,7 +357,7 @@ var $$resizable = function(){
         
         _self.on(_name+"dragsoutheaststart",function(e,obj){
             _resizer = {"start_size":[this.clientWidth,this.clientHeight],"start_offset":$$.core.getOffset(this)};
-            if (_params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
+            if (_params && _params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
             _self.trigger(_name+"start",{elements:[this],point:"se",start:_resizer});
         });
         
@@ -374,7 +373,7 @@ var $$resizable = function(){
                 _resizer["dragger"]={
                     "element": this
                     , "style": $$.core.getStyle(this,["height","width"])
-                }
+                };
             }
             
             $$.core.setStyle(this,{
@@ -389,14 +388,14 @@ var $$resizable = function(){
                 if ((_resizer["start_offset"][1]+_height)>=(_resizer["container"]["offset"][1]+_resizer["container"]["size"][1])){
                     _resizer["dragger"]["style"] = {
                         "height": ((_resizer["container"]["offset"][1]+_resizer["container"]["size"][1])-_resizer["start_offset"][1]).toString()+"px"
-                    }
+                    };
                     $$.core.setStyle(_resizer["dragger"]["element"],_resizer["dragger"]["style"]);
                 }
                 //Limiting EAST to container
                 if ((_resizer["start_offset"][0]+_width)>=(_resizer["container"]["offset"][0]+_resizer["container"]["size"][0])){
                     _resizer["dragger"]["style"] = {
                         "width": ((_resizer["container"]["offset"][0]+_resizer["container"]["size"][0])-_resizer["start_offset"][0]).toString()+"px"
-                    }
+                    };
                     $$.core.setStyle(_resizer["dragger"]["element"],_resizer["dragger"]["style"]);
                 }
             }
@@ -423,7 +422,7 @@ var $$resizable = function(){
         
         _self.on(_name+"dragsouthweststart",function(e,obj){
             _resizer = {"start_size":[this.clientWidth,this.clientHeight],"start_offset":$$.core.getOffset(this)};
-            if (_params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
+            if (_params && _params!==undefined && _params.container !== undefined) _resizer["container"] = {element:_params.container,offset:$$.core.getOffset(_params.container),size:[_params.container.clientWidth,_params.container.clientHeight]};
             _self.trigger(_name+"start",{elements:[this],point:"sw",start:_resizer});
         });
         
@@ -439,7 +438,7 @@ var $$resizable = function(){
                 _resizer["dragger"]={
                     "element": this
                     , "style": $$.core.getStyle(this,["height","left"])
-                }
+                };
             }
             
             $$.core.setStyle(this,{
@@ -450,19 +449,19 @@ var $$resizable = function(){
             
             if (_resizer["dragger"]){
                 //Limiting WEST to container
-                _resizer["dragger"]["offset"] = $$.core.getOffset(_resizer["dragger"]["element"])
+                _resizer["dragger"]["offset"] = $$.core.getOffset(_resizer["dragger"]["element"]);
                 if (_resizer["dragger"]["offset"][0]<=_resizer["container"]["offset"][0]){
                     _resizer["dragger"]["style"] = {
                         "left": (parseInt(_resizer["dragger"]["style"]["left"],10)+(_resizer["container"]["offset"][0]-_resizer["dragger"]["offset"][0])).toString()+"px"
                         , "width": (_resizer["start_size"][0]+(_resizer["start_offset"][0]-_resizer["container"]["offset"][0])).toString()+"px"
-                    }
+                    };
                     $$.core.setStyle(_resizer["dragger"]["element"],_resizer["dragger"]["style"]);
                 } else $$.core.setStyle(_resizer["dragger"]["element"],{"width":_width.toString()+"px"});
                 //Limiting SOUTH to container
                 if ((_resizer["start_offset"][1]+_height)>=(_resizer["container"]["offset"][1]+_resizer["container"]["size"][1])){
                     _resizer["dragger"]["style"] = {
                         "height": ((_resizer["container"]["offset"][1]+_resizer["container"]["size"][1])-_resizer["start_offset"][1]).toString()+"px"
-                    }
+                    };
                     $$.core.setStyle(_resizer["dragger"]["element"],_resizer["dragger"]["style"]);
                 }
             } else $$.core.setStyle(this,{"width":_width.toString()+"px"});
@@ -565,7 +564,6 @@ var $$resizable = function(){
             //console.log("resizable destroyed on ", _self)
             _name = _params = _handlers = _resizer = _setResizableNorth = _setResizableSouth = _setResizableEast = _setResizableWest = _setResizableNorthEast = _setResizableNorthWest = _setResizableSouthEast = _setResizableSouthWest = _setResizable = _method = null;
         }
-    }
+    };
     return _method;
-}
-
+};

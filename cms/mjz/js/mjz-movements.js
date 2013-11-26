@@ -5,14 +5,13 @@ var $$draggable = function(){
         "classMove": "mjz-draggable"
     }
     , _addDraggableElements = function(){
-        if (_params!==undefined && _params["handler"]!==undefined) {
+        if (_params && _params!==undefined && _params["handler"]!==undefined) {
             _handler = _params["handler"];
             if ($$.core.getType(_handler)=="function"){
                 var _elements = _params.elements || _self.elements
-                , i=_elements.length
                 , _new_handler = new Array
                 ;
-                while(i--) _new_handler.push(_handler.call(_elements[i]));
+                for (var i=0,l=_elements.length;i<l;i++) _new_handler.push(_handler.call(_elements[i]));
                 _handler = _new_handler;
             }
             _handler = $$(_handler);
@@ -36,8 +35,7 @@ var $$draggable = function(){
         , _helper = _this
         ;
         _$$doc.on("mouseup",_mouseup,{stop:true});
-        
-        //$$.core.setDocumentSelection(false);
+       	//$$.core.setDocumentSelection(false);
         
         _dragger = {origin:_this,start_position:{mouse:$$.core.getMouse(e),element:_element_position},current_position:{mouse:null,element:null}};
         if (_params!==undefined){
@@ -47,7 +45,7 @@ var $$draggable = function(){
                     "element": $$(_params.scrollable)
                     , "scroll": [_params.scrollable.scrollLeft,_params.scrollable.scrollTop]
                     , "partial": [_params.scrollable.scrollLeft,_params.scrollable.scrollTop]
-                }
+                };
                 _dragger["scrollable"]["element"].on("scroll",_scrollcontainer);
             }
             if (_params.helper !== undefined){
@@ -80,11 +78,12 @@ var $$draggable = function(){
     }
     , _scrollcontainer = function(e,obj){
         var _this = _self==_handler ? this : _self.elements[this.$$plug.indexes[_handler.unique]]
-        , _element_styles = $$.core.getStyle(_dragger.element,["left","top"])
+        	, _element_styles = $$.core.getStyle(_dragger.element,["left","top"])
+        ;
         _element_styles = {
             "left": (parseInt(_element_styles["left"],10)+(_this.scrollLeft-_dragger["scrollable"]["scroll"][0])).toString()+"px"
             , "top": (parseInt(_element_styles["top"],10)+(_this.scrollTop-_dragger["scrollable"]["scroll"][1])).toString()+"px"
-        }
+        };
         _dragger["scrollable"]["scroll"] = [_this.scrollLeft,_this.scrollTop];
         $$.core.setStyle(_dragger.element,_element_styles);
         _this = _element_styles = null;
@@ -137,14 +136,14 @@ var $$draggable = function(){
             if (_params["block-x"]) delete _style["left"];
             if (_params["block-y"]) delete _style["top"];
         }
-        _new_style = $$.core.extend(_new_style,_style)
+        _new_style = $$.core.extend(_new_style,_style);
         
         if (dragger.container!==undefined && dragger.container.offset!==undefined){
-            _element_styles = $$.core.getStyle(dragger.element,["left","top"])
+            _element_styles = $$.core.getStyle(dragger.element,["left","top"]);
             _element_styles = {
                 "left": parseInt(_element_styles["left"],10)
                 , "top": parseInt(_element_styles["top"],10)
-            }
+            };
         }
         $$.core.setStyle(dragger.element,_style);
         
@@ -189,7 +188,7 @@ var $$draggable = function(){
     }
     ;
     return _method;
-}
+};
 
 var $$droppable = function(){
     var _self
@@ -274,7 +273,7 @@ var $$droppable = function(){
                 ) {
                     if (!$$.core.droppable.elements[_droppable]["over"]){
                         $$.core.droppable.elements[_droppable]["over"] = true;
-                        if (_params["classOver"] && _params["classOver"].length>0) $$.core.addClass($$.core.droppable.elements[_droppable]["element"],_params["classOver"]);
+                        if (_params && _params["classOver"] && _params["classOver"].length>0) $$.core.addClass($$.core.droppable.elements[_droppable]["element"],_params["classOver"]);
                         _self.trigger(_name+"over",{elements:[$$.core.droppable.elements[_droppable]["element"]]});
                     }
                     dragger.droppables.push($$.core.droppable.elements[_droppable]["element"]);
@@ -287,13 +286,13 @@ var $$droppable = function(){
                 ) {
                     if (!$$.core.droppable.elements[_droppable]["over"]){
                         $$.core.droppable.elements[_droppable]["over"] = true;
-                        if (_params["classOver"] && _params["classOver"].length>0) $$.core.addClass($$.core.droppable.elements[_droppable]["element"],_params["classOver"]);
+                        if (_params && _params["classOver"] && _params["classOver"].length>0) $$.core.addClass($$.core.droppable.elements[_droppable]["element"],_params["classOver"]);
                         _self.trigger(_name+"over",{elements:[$$.core.droppable.elements[_droppable]["element"]]});
                     }
                     dragger.droppables.push($$.core.droppable.elements[_droppable]["element"]);
                 } else if ($$.core.droppable.elements[_droppable]["over"]){
                     $$.core.droppable.elements[_droppable]["over"] = false;
-                    if (_params["classOver"] && _params["classOver"].length>0) $$.core.removeClass($$.core.droppable.elements[_droppable]["element"],_params["classOver"]);
+                    if (_params && _params["classOver"] && _params["classOver"].length>0) $$.core.removeClass($$.core.droppable.elements[_droppable]["element"],_params["classOver"]);
                     _self.trigger(_name+"out",{elements:[$$.core.droppable.elements[_droppable]["element"]]});
                 }
             }
@@ -324,7 +323,7 @@ var $$droppable = function(){
     }
     ;
     return _method;
-}
+};
 
 var $$sortable = function(){
     var _self
@@ -360,7 +359,12 @@ var $$sortable = function(){
         _element = null;
     }
     , _dragMove = function(e,obj){
-        if (e.$$plug.params.move.droppables.length>0) _sorter.element.parentNode.insertBefore(_sorter.element,e.$$plug.params.move.droppables[0]);
+        if (e.$$plug.params.move.droppables.length>0) {
+        	var _drops = e.$$plug.params.move.droppables.slice(0);
+        	_drops.sort(function(a,b){return $$.core.getElementIndex(a) <  $$.core.getElementIndex(b) ? 1 : -1;});
+        	if (_drops.length==1 && _drops[0].nextSibling==e.$$plug.params.move.element) _sorter.element.parentNode.appendChild(_sorter.element);
+        	else _sorter.element.parentNode.insertBefore(_sorter.element,_drops[0]);
+        }
     }
     , _dragStop = function(e,obj){
         if (_sorter){
@@ -385,6 +389,7 @@ var $$sortable = function(){
             "helper": _params["helper"]
             , "scrollable": _params["scrollable"]
             , "container": _params["container"]
+            , "handler": _params["handler"]
             , "block-x": _params["block-x"]
         });
         _self.on(_name+"dragstart",_dragStart);
@@ -413,4 +418,119 @@ var $$sortable = function(){
     }
     ;
     return _method;
-}
+};
+
+var $$movearound = function(){
+    var _self
+    , _name
+    , _params = {
+            "autostart": false
+        }
+    , _movers
+    , _cleanMover = function(mover){
+        mover["left_add"] = undefined;
+        mover["top_add"] = undefined;
+        mover["counter"] = 0;
+    }
+    , _moveElement = function(mover){
+        if (!mover)return false;
+        var _element_position = $$.core.getPosition(this)
+            , _rnd_left = Math.random()*11
+            , _rnd_top = Math.random()*11
+        ;
+        mover["left_add"] = (mover && mover["left_add"]!==undefined) ? mover["left_add"] : (_rnd_left>6) ? 0 : ((_rnd_left<=3) ? -1 : 1);
+        mover["top_add"] = (mover && mover["top_add"]!==undefined) ? mover["top_add"] : (_rnd_top>6) ? 0 : ((_rnd_top<=3) ? -1 : 1);
+        if (mover["left_add"]==0 && mover["top_add"]==0){
+            _cleanMover(mover);
+            return false;
+        }
+        if (_params["container"]){
+            var _element_coords = $$.core.getCoords(this)
+                , _container_coords = $$.core.getCoords(_params["container"])
+            ;
+            
+            if (_container_coords[0][0] <= _element_coords[0][0]+mover["left_add"]
+                && _container_coords[0][1] <= _element_coords[0][1]+mover["top_add"]
+                && _container_coords[2][0] >= _element_coords[2][0]+mover["left_add"]
+                && _container_coords[2][1] >= _element_coords[2][1]+mover["top_add"]
+            ) {
+                //console.log("in",mover["left_add"],mover["top_add"])
+                console.log("before: ",mover["top_add"]," » ",_element_position[1]);
+                _element_position[0]=_element_position[0]+mover["left_add"];
+                _element_position[1]=_element_position[1]+mover["top_add"];
+                console.log("after: ",mover["top_add"]," » ",_element_position[1]);
+            } else {
+                //console.log("out",mover["left_add"],mover["top_add"])
+                _cleanMover(mover);
+                return false;
+            }
+        } else {
+            _element_position[0]=_element_position[0]+mover["left_add"];
+            _element_position[1]=_element_position[1]+mover["top_add"];
+        }
+        
+        //console.log(mover["counter"]," - ",mover["left_add"]," - ",_element_position[0]," - ",mover["top_add"]," - ",_element_position[1])
+        $$.core.setStyle(this,{
+            "left": _element_position[0].toString()+"px"
+            , "top": _element_position[1].toString()+"px"
+        });
+        mover["counter"]++;
+        
+        //console.log(mover["counter"])
+        if (mover["counter"]>=5) _cleanMover(mover);
+    }
+    , _setMoveElement = function(e,obj){
+        var _this = this
+            ,_element_unique = obj.unique.toString()+"."+this.$$plug.indexes[obj.unique].toString()
+        ;
+        if (!_movers) _movers = {};
+        if (!_movers[_element_unique]) {
+            _movers[_element_unique] = {
+                "counter": 0
+                , "movement": setInterval(function(){
+                    _moveElement.call(_this,_movers[_element_unique]);
+                },40)
+            };
+        }
+    }
+    , _addMoveAround = function(){
+        _self.on(_name+"start",_setMoveElement);
+        if (_params){
+            if (_params.autostart) _self.trigger(_name+"start");
+        }
+    }
+    
+    , _removeMoveAround = function(){
+        if (_movers){
+            var _idx;
+            for (_idx in _movers){
+                clearInterval(_movers[_idx]["movement"]);
+                delete _movers[_idx];
+            }
+        }
+        
+    }
+    , _method = {
+        init: function(params,name){
+            _self = this;
+            _name = name;
+            _params = $$.core.extend(_params,params,true);
+            _addMoveAround();
+        }
+        , start: function(){
+            _self.trigger(_name+"start");
+        }
+        , stop: function(){
+            _removeMoveAround();
+        }
+        , destroy: function(params){
+            _self = this;
+            _removeMoveAround();
+            _self.off(_name+"start",_setMoveElement);
+            //console.log("movearound destroyed on ", _self)
+            _name = _params = _mover = _method = null;
+        }
+    }
+    ;
+    return _method;
+};

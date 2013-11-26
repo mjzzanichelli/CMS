@@ -1,4 +1,5 @@
 var http = require('http')
+, MultipartParser = require('./MultipartParser.js')
 , server
 ;
 
@@ -20,9 +21,9 @@ server = http.createServer(function(req, res){
 		    		//console.log(_params)
 		    		var _fragment = data["content"]("["+ _params["fragment"]["ref"] +"="+ _params["fragment"]["id"] +"]");
 		    		_fragment.html(_params["fragment"]["html"]);	    		
-		    		module.exports.web.methods.writeFile(_params.page.phisical,data["content"].html(),function(){
+		    		module.exports.web.methods.writeFile(_params.page.phisical,data["content"].html(),function(resp){
 		    			res.end(JSON.stringify({"fragment":_fragment.html()}));	
-		    		})
+		    		});
 		    	});
 		    });
 	   	}
@@ -90,6 +91,39 @@ server = http.createServer(function(req, res){
 				
 			}
 		}
+	}
+	
+	if (req.url.indexOf('/API/Upload/') == 0) {
+		res.writeHead(200, {
+			'Access-Control-Allow-Origin' : '*'
+			/*, 'Access-Control-Allow-Methods': 'PUT, GET, POST, DELETE, OPTIONS'
+			, 'Access-Control-Allow-Headers': 'X-Requested-With'*/
+		});
+		//console.log("A");
+		//req.setEncoding('binary');
+		if (req.method=="POST"){
+			//console.log("B");
+			var _params = "";
+			req.on("data", function(chunk){
+				_params+=chunk;
+				//console.log("C");
+		    });
+		    req.on("end", function(){ 
+				//console.log("D");
+		        if ( req.headers.hasOwnProperty('content-type') ) {
+		        	//console.log("E");
+		            var multipartData = new MultipartParser(req.headers['content-type'],_params);
+		            var _file = multipartData.parts[multipartData.fields[0]];
+		            //console.log(multipartData.parts.imgFile.body);
+		            var filename = "/CMS/cms/pages/storage/"+_file.disposition.filename.replace(/ /g,"_");
+		            module.exports.web.methods.createStorageFile(filename,_file.body,function(resp){
+		            	//console.log("file been created",filename);
+		            	//console.log(resp);
+		            	res.end(JSON.stringify({"filename":resp.filename}));
+		            });
+		        }        
+		    });
+	   	}
 	}
 });
 

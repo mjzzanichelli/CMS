@@ -4,6 +4,7 @@
 	, "fragments": { 
 		"text": "text.json"
 		, "list": "list.json"
+		, "img": "img.json"
 	}
 	
 }
