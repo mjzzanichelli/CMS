@@ -1,4 +1,5 @@
 var UNI = (function() {
+	if (UNI) return UNI; 
 	var CONFIG = {
 		"site" : {
 			"ext" : "cms"//global prefix
@@ -545,4 +546,4 @@ var UNI = (function() {
 
 	return create();
 }
-)();
+)(UNI);
