@@ -444,7 +444,7 @@ var UNI = (function() {
 			},
 			"success" : function(data) {
 
-				var _site = eval('(' + data + ')'),_controllers = [], _fragments,_page,i,ic,_controller,_location = window.location.pathname;
+				var _site = eval('(' + data + ')'),_controllers = [], _fragments,_page,i,ic,_controller,_location = window.location.pathname,_listen = new IO.installTo();
 				CONFIG["site"] = $$.extend(CONFIG["site"], _site, true);
 				CONFIG["refs"] = getUNIRefs();
 				_fragments = {
@@ -462,7 +462,10 @@ var UNI = (function() {
 				
 				if (CONFIG["site"]["pages"] && CONFIG["site"]["pages"][_location]){
 					setPageConfig(_location,true);
-					(new IO.installTo()).publish(messages[1]);
+					_listen.publish(messages[1]);
+				} else {
+					CONFIG["loaded"] = true;
+					_listen.publish(messages[2]);
 				}
 			}
 		});
